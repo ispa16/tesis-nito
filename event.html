@@ -20,6 +20,9 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:400,600,700&display=swap"
     rel="stylesheet" />
   <!-- Custom styles for this template -->
+  <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.js"></script>
+
   <link href="css/style.css" rel="stylesheet" />
   <!-- responsive style -->
   <link href="css/responsive.css" rel="stylesheet" />
@@ -79,23 +82,26 @@
   </div>
 
   <!-- event section -->
-  <section class="event_section layout_padding">
+  <section class="event_section layout_padding" style="padding: 5vh 5vh 5vw 5vw; border: 2em;">
     <table id="table_id" class="display">
       <thead>
         <tr>
-          <th>Column 1</th>
-          <th>Column 2</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Duracion</th>
+          <th>Magnitud</th>
+          <th>Epicentro</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>Row 1 Data 1</td>
           <td>Row 1 Data 2</td>
+          <td>Row 1 Data 2</td>
+          <td>Row 1 Data 2</td>
+          <td>Row 1 Data 2</td>
         </tr>
-        <tr>
-          <td>Row 2 Data 1</td>
-          <td>Row 2 Data 2</td>
-        </tr>
+
       </tbody>
     </table>
     <div class="container">
@@ -248,9 +254,60 @@
       $('#table_id').DataTable();
     });
   </script>
-  <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
-  <script type="text/javascript" src="js/bootstrap.js"></script>
 
 </body>
+<script type="module">
+
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-analytics.js";
+  //import { auth } from 'https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js'
+  import { collection, orderBy, getFirestore, doc, getDocs, onSnapshot, query, limit } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-firestore.js";
+
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyA1_bLWS59K4DdjG4AdQNMY7HPlu_dHhlY",
+    authDomain: "datos-py-2ba76.firebaseapp.com",
+    databaseURL: "https://datos-py-2ba76-default-rtdb.firebaseio.com",
+    projectId: "datos-py-2ba76",
+    storageBucket: "datos-py-2ba76.appspot.com",
+    messagingSenderId: "736676583590",
+    appId: "1:736676583590:web:de4fd62257a4e50037bc67",
+    measurementId: "G-LRNDNQ0K82"
+  };
+
+  // Initialize Firebase
+  function addRow(data1, data2, data3, data4, data5) {
+    var row = table.insertRow(1);
+    // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    var cell3 = row.insertCell(2);
+    var cell4 = row.insertCell(3);
+    var cell5 = row.insertCell(4);
+    cell1.innerHTML = data1;
+    cell2.innerHTML = data2;
+    cell3.innerHTML = data3;
+    cell4.innerHTML = data4;
+    cell5.innerHTML = data5;
+  }
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const qs = query(collection(db, "sismos"), orderBy("date", "desc"));
+  const querySnapshot = await getDocs(qs);
+  var table = document.getElementById("table_id");
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    console.log(doc.id, " => ", doc.data());
+    // Create an empty <tr> element and add it to the 1st position of the table:
+    addRow(doc.data().date, doc.data().hour, doc.data().duracion, doc.data().magnitud, "Loja")
+    //addData(myChart, doc.data().date, doc.data().x);
+  });
+</script>
 
 </html>
